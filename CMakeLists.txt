@@ -9,9 +9,9 @@ project(StrayGL
 
 # Definir como projeto de biblioteca
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-# Politica para tratar diretórios de saída
 cmake_policy(SET CMP0076 NEW)
+
+
 
 # Opção para build estático/dinâmico
 option(BUILD_SHARED_LIBS "Build as shared library" OFF)
