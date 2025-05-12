@@ -49,7 +49,7 @@ StrayGL/
 ├── 3thparty/      # Dependências (GLFW, GLAD, ImGui)
 ├── include/       # Headers públicos
 ├── src/           # Implementação
-├── samples/       # Exemplos de uso
+├── examples/       # Exemplos de uso
 ├── CMakeLists.txt # Configuração de build
 └── README.md
 ```
