@@ -56,6 +56,7 @@ StrayGL/
 
 
 ## 🌟 **Recursos Implementados**
+    ✅ - Criação de Janela
 
 ## 📚 **Recursos de Aprendizado**
 - [LearnOpenGL](https://learnopengl.com/)
