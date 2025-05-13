@@ -44,7 +44,7 @@ namespace Stray
     };
 
     // Macro para criar o ponto de entrada automaticamente
-    #define STRAY_RUN_APP(APP_CLASS) \
+    #define STRAY_RUN(APP_CLASS) \
         int main() { \
             APP_CLASS app; \
             app.run(); \

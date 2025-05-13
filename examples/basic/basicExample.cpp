@@ -5,7 +5,7 @@
 
 class BasicExample : public Stray::App
 {
-    float bgColor[3] = {0.1f, 0.2f, 0.3f};
+    float bgColor[3] = {0.3f, 0.1f, 0.3f};
     bool showDemo = false;
     bool shouldClose = false;
 
@@ -36,9 +36,5 @@ public:
 
     }
 };
-int main()
-{
-    BasicExample app;
-    app.run();
-    return 0;
-}
+
+STRAY_RUN(BasicExample)
