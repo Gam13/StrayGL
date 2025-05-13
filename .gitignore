@@ -1,5 +1,7 @@
 .vscode/
-
+/build/
+/CMakeFiles/
+/CMakeCache.txt
 # Prerequisites
 *.d
 

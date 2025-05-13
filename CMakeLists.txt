@@ -1,106 +1,96 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.15)
+project(StrayGL LANGUAGES C CXX)
 
-# Configuração básica do projeto
-project(StrayGL
-    VERSION 1.0.0
-    DESCRIPTION "Projeto usando GLFW e GLAD"
-    LANGUAGES CXX
-)
-
-# Definir como projeto de biblioteca
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-cmake_policy(SET CMP0076 NEW)
-
-
-
-# Opção para build estático/dinâmico
-option(BUILD_SHARED_LIBS "Build as shared library" OFF)
-
-# Configuração de padrão C++ moderno
+#==================================================
+# Configurações Básicas
+#==================================================
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Configurações específicas de plataforma
-if(WIN32)
-    add_definitions(-D_WIN32_WINNT=0x0A00)
-    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-elseif(UNIX AND NOT APPLE)
-    add_definitions(-D_LINUX)
-    set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-endif()
+#==================================================
+# Modos de Operação
+#==================================================
+option(STRAYGL_DEVELOPMENT "Modo desenvolvimento (inclui exemplos e ImGui)" ON)
+option(BUILD_SHARED_LIBS "Build como biblioteca compartilhada" ON)
 
-# Configuração de warnings
-if(MSVC)
-    add_compile_options(/W4 /WX /permissive-)
-else()
-    add_compile_options(-Wall -Wextra -pedantic -Werror)
-endif()
+#==================================================
+# Dependências Obrigatórias (GLFW + GLAD)
+#==================================================
+# Configura GLFW
+add_subdirectory(3thparty/GLFW)
+set_target_properties(glfw PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-# Configuração de diretórios de saída
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-
-# Processar dependências de terceiros
-add_subdirectory(3thparty)
-
-# Encontrar fontes
-file(GLOB_RECURSE SOURCES 
-    "src/*.cpp" 
+#==================================================
+# Biblioteca Principal
+#==================================================
+add_library(StrayGL
+    src/app.cpp
+    3thparty/GLAD/src/glad.c  # GLAD incorporado
 )
 
-file(GLOB_RECURSE HEADERS 
-    "include/*.hpp" 
-)
-
-# Verificar se há fontes
-if(NOT SOURCES)
-    message(FATAL_ERROR "No source files found in src directory!")
-endif()
-
-# Criar alvo principal
-add_library(${PROJECT_NAME} 
-    ${SOURCES}
-    ${HEADERS}
-)
-
-# Configurações específicas do alvo
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
-
-# Incluir diretórios (forma moderna preferida)
-target_include_directories(${PROJECT_NAME} PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+target_include_directories(StrayGL PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/3thparty>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/3thparty/GLAD/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/3thparty/GLFW/include> 
 )
 
-# Linkar com dependências
-target_link_libraries(${PROJECT_NAME} PUBLIC
-    3thparty::glfw
-    3thparty::glad
-    3thparty::imgui
-)
+target_link_libraries(StrayGL PRIVATE glfw)
 
-# Configuração para instalação
-install(TARGETS ${PROJECT_NAME}
-    EXPORT ${PROJECT_NAME}Targets
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin
-    INCLUDES DESTINATION include
-)
+#==================================================
+# ImGui (Somente em desenvolvimento)
+#==================================================
+if(STRAYGL_DEVELOPMENT)
+    message(STATUS "Configurando ImGui para desenvolvimento")
+    
+    set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3thparty/IMGUI)
+    
+    # Verifica se o submodule existe
+    if(NOT EXISTS ${IMGUI_DIR}/imgui.h)
+        message(FATAL_ERROR "Submodule ImGui não encontrado. Execute:\n  git submodule update --init --recursive")
+    endif()
+    
+    # Configura ImGui manualmente
+    add_library(imgui STATIC
+        ${IMGUI_DIR}/imgui.cpp
+        ${IMGUI_DIR}/imgui_draw.cpp
+        ${IMGUI_DIR}/imgui_tables.cpp
+        ${IMGUI_DIR}/imgui_widgets.cpp
+        ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
+        ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
+    )
+    
+    target_include_directories(imgui PUBLIC
+        ${IMGUI_DIR}
+        ${IMGUI_DIR}/backends
+    )
+    
+    target_link_libraries(imgui PRIVATE glfw)
+    target_compile_definitions(imgui PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
 
-install(DIRECTORY include/ DESTINATION include)
+    #==================================================
+    # Exemplos (Somente com ImGui)
+    #==================================================
+    add_subdirectory(examples)
+else()
+    message(STATUS "Modo produção: exemplos e ImGui desativados")
+endif()
 
-install(EXPORT ${PROJECT_NAME}Targets
-    FILE ${PROJECT_NAME}Config.cmake
-    NAMESPACE ${PROJECT_NAME}::
-    DESTINATION lib/cmake/${PROJECT_NAME}
-)
+#==================================================
+# Instalação (Somente em produção)
+#==================================================
+if(NOT STRAYGL_DEVELOPMENT)
+    install(DIRECTORY include/StrayGL DESTINATION include)
+    install(TARGETS StrayGL EXPORT StrayGLTargets
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        RUNTIME DESTINATION bin
+    )
 
-# Configuração de exportação para uso em outros projetos
-export(EXPORT ${PROJECT_NAME}Targets
-    FILE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-    NAMESPACE ${PROJECT_NAME}::
-)
+    install(EXPORT StrayGLTargets
+        FILE StrayGLConfig.cmake
+        NAMESPACE StrayGL::
+        DESTINATION lib/cmake/StrayGL
+    )
+endif()
