@@ -4,3 +4,6 @@
 [submodule "3thparty/IMGUI"]
 	path = 3thparty/IMGUI
 	url = https://github.com/ocornut/imgui
+[submodule "3thparty/GLAD"]
+	path = 3thparty/GLAD
+	url = https://glad.dav1d.de/
