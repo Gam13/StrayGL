@@ -5,8 +5,6 @@
 
 class BasicExample : public Stray::App
 {
-    bool showDemo = false;
-    bool shouldClose = false;
 
 public:
     void initialize() override
@@ -16,10 +14,7 @@ public:
 
     void update(float deltaTime) override
     {
-        if (shouldClose)
-        {
-            glfwSetWindowShouldClose(getWindow(), true);
-        }
+        
     }
 
     void terminate() override
