@@ -23,20 +23,26 @@ namespace Stray
         glfwTerminate();
     }
 
-    void App::createWindow(std::string title, int w, int h)
+    void App::createWindow(std::string title, int w, int h, StrayAPI api)
     {
         if (window)
         {
-            glfwDestroyWindow(window);
+            cleanup();
         }
 
         width = w;
         height = h;
 
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        // Obter as dicas específicas da API
+        auto hints = RendererFactory::getRequiredWindowHints(api);
 
+        // Aplicar as dicas antes de criar a janela
+        for (const auto &hint : hints)
+        {
+            glfwWindowHint(hint.first, hint.second);
+        }
+
+        // Criar a janela
         window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
         if (!window)
         {
@@ -49,14 +55,25 @@ namespace Stray
             throw std::runtime_error("Failed to create GLFW window");
         }
 
-        glfwMakeContextCurrent(window);
-
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        // Criar e inicializar o renderer
+        renderer = RendererFactory::createRenderer(api);
+        if (!renderer->initialize(window))
         {
-            glfwDestroyWindow(window);
-            window = nullptr;
-            throw std::runtime_error("Failed to initialize GLAD");
+            throw std::runtime_error("Failed to initialize renderer");
         }
+
+        // Configurar o callback de redimensionamento
+        glfwSetWindowUserPointer(window, this);
+        glfwSetFramebufferSizeCallback(window, [](GLFWwindow *window, int width, int height)
+                                       {
+        auto app = static_cast<App*>(glfwGetWindowUserPointer(window));
+        app->width = width;
+        app->height = height;
+        if (app->renderer) {
+            app->renderer->resize(width, height);
+        } });
+
+        glfwMakeContextCurrent(window);
     }
 
     void App::run()
@@ -67,9 +84,10 @@ namespace Stray
         {
             initialize();
 
+            // Se não houver janela criada, criar uma padrão
             if (!window)
             {
-                createWindow("Default Window", 800, 600);
+                createWindow("Default Window", width, height, StrayAPI::OpenGL);
             }
 
             loadContent();
@@ -97,13 +115,21 @@ namespace Stray
 
             glfwPollEvents();
             update(deltaTime);
-            render();
+
+            renderer->render();
+
             glfwSwapBuffers(window);
         }
     }
 
     void App::cleanup()
     {
+        if (renderer)
+        {
+            renderer->cleanup();
+            renderer.reset();
+        }
+
         if (window)
         {
             glfwDestroyWindow(window);

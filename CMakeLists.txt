@@ -26,6 +26,8 @@ set_target_properties(glfw PROPERTIES POSITION_INDEPENDENT_CODE ON)
 #==================================================
 add_library(StrayGL
     src/app.cpp
+    src/Renderer/OpenGLRenderer.cpp
+    src/Renderer/RendererFactory.cpp
     3thparty/GLAD/src/glad.c  # GLAD incorporado
 )
 
