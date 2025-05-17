@@ -57,6 +57,8 @@ StrayGL/
 
 ## 🌟 **Recursos Implementados**
     ✅ - Criação de Janela
+    ✅ - Criação de um RendererFactory para abstrair o renderer
+    ✅ - Renderer de OpenGL
 
 ## 📚 **Recursos de Aprendizado**
 - [LearnOpenGL](https://learnopengl.com/)
