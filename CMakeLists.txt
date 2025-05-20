@@ -15,10 +15,11 @@ option(STRAYGL_DEVELOPMENT "Modo desenvolvimento (inclui exemplos e ImGui)" ON)
 option(BUILD_SHARED_LIBS "Build como biblioteca compartilhada" ON)
 
 #==================================================
-# Dependências Obrigatórias (GLFW + GLAD)
+# Dependências Obrigatórias
 #==================================================
-# Configura GLFW
+
 add_subdirectory(3thparty/GLFW)
+add_subdirectory(3thparty/SPDLOG)
 set_target_properties(glfw PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 #==================================================
@@ -28,6 +29,7 @@ add_library(StrayGL
     src/app.cpp
     src/Renderer/OpenGLRenderer.cpp
     src/Renderer/RendererFactory.cpp
+    src/Logger.cpp
     3thparty/GLAD/src/glad.c  # GLAD incorporado
 )
 
@@ -36,9 +38,10 @@ target_include_directories(StrayGL PUBLIC
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/3thparty/GLAD/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/3thparty/GLFW/include> 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/3thparty/SPDLOG/include>
 )
 
-target_link_libraries(StrayGL PRIVATE glfw)
+target_link_libraries(StrayGL PRIVATE glfw spdlog)
 
 #==================================================
 # ImGui (Somente em desenvolvimento)

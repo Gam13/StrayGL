@@ -7,3 +7,6 @@
 [submodule "3thparty/GLAD"]
 	path = 3thparty/GLAD
 	url = https://glad.dav1d.de/
+[submodule "3thparty/SPDLOG"]
+	path = 3thparty/SPDLOG
+	url = https://github.com/gabime/spdlog
