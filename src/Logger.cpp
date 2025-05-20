@@ -1,5 +1,5 @@
 #include "StrayGL/Logger.hpp"
-#include <vector>
+#include "StrayGL/pch.h"
 
 namespace Stray
 {

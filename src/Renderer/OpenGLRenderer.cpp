@@ -1,5 +1,5 @@
 #include "StrayGL/Renderer/OpenGLRenderer.hpp"
-#include <iostream>
+#include "StrayGL/pch.h"
 
 namespace Stray
 {

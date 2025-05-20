@@ -1,9 +1,7 @@
 // RendererFactory.hpp
 #pragma once
 #include "StrayGL/Renderer/IRenderer.hpp"
-#include <memory>
-#include <vector>
-#include <utility>
+#include "StrayGL/pch.h"
 
 namespace Stray {
     enum StrayAPI { None = 0, OpenGL };

@@ -1,7 +1,7 @@
 // RendererFactory.cpp
 #include "StrayGL/Renderer/RendererFactory.hpp"
 #include "StrayGL/Renderer/OpenGLRenderer.hpp"
-#include <stdexcept>
+#include "StrayGL/pch.h"
 
 namespace Stray {
     RendererFactory::WindowHints RendererFactory::getRequiredWindowHints(StrayAPI api) {

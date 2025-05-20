@@ -1,12 +1,11 @@
 #include "StrayGL/app.hpp"
-#include <stdexcept>
 #include "StrayGL/Logger.hpp"
+#include "StrayGL/pch.h"
 
 namespace Stray
 {
     App::App()
     {
-        // Inicializa o logger (se ainda não foi inicializado)
         if (!Logger::getCoreLogger()) {
             Logger::init("StrayGL.log");
         }

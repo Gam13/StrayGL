@@ -3,9 +3,7 @@
 #define STRAY_APP_HPP
 #include "GLFW/glfw3.h"
 #include "StrayGL/Renderer/RendererFactory.hpp"
-#include <memory>
-#include <string>
-#include <chrono>
+#include "StrayGL/pch.h"
 
 namespace Stray
 {
