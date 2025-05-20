@@ -56,6 +56,7 @@ StrayGL/
 
 
 ## 🌟 **Recursos Implementados**
+    ✅ - Logger
     ✅ - Criação de Janela
 
 ## 📚 **Recursos de Aprendizado**
