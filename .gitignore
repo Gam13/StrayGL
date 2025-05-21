@@ -4,7 +4,6 @@
 /CMakeCache.txt
 # Prerequisites
 *.d
-*.log
 # Compiled Object files
 *.slo
 *.lo
@@ -34,3 +33,6 @@
 *.exe
 *.out
 *.app
+
+# Log Data
+*.log

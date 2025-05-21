@@ -1,26 +1,26 @@
-[2025-05-20 23:13:51.287] [STRAY] [info] Logger initialized
-[2025-05-20 23:13:51.288] [STRAY] [info] Log file: StrayGL.log
-[2025-05-20 23:13:51.288] [STRAY] [info] Initializing StrayGL Application Framework
-[2025-05-20 23:13:51.288] [STRAY] [debug] GLFW Version: 3.5.0
-[2025-05-20 23:13:51.360] [STRAY] [debug] GLFW initialized successfully
-[2025-05-20 23:13:51.360] [STRAY] [info] Starting application main loop
-[2025-05-20 23:13:51.360] [STRAY] [debug] Calling initialize()
-[2025-05-20 23:13:51.360] [STRAY] [info] Creating window: 'Basic Example' (800x600) with API: 1
-[2025-05-20 23:13:51.360] [STRAY] [debug] Applying 3 window hints
-[2025-05-20 23:13:51.727] [STRAY] [debug] Window created successfully
-[2025-05-20 23:13:51.727] [STRAY] [info] Creating renderer for API: 1
-[2025-05-20 23:13:51.734] [STRAY] [info] Renderer initialized successfully
-[2025-05-20 23:13:51.734] [STRAY] [debug] OpenGL context set to current
-[2025-05-20 23:13:51.734] [STRAY] [debug] Calling loadContent()
-[2025-05-20 23:13:51.734] [STRAY] [info] Entering main loop
-[2025-05-20 23:13:51.734] [STRAY] [debug] Starting main loop with window 0x57cd245ba220
-[2025-05-20 23:13:53.994] [STRAY] [debug] Exiting main loop
-[2025-05-20 23:13:53.994] [STRAY] [debug] Calling unloadContent()
-[2025-05-20 23:13:53.994] [STRAY] [debug] Calling terminate()
-[2025-05-20 23:13:53.994] [STRAY] [info] Application run cycle completed
-[2025-05-20 23:13:53.994] [STRAY] [debug] Destroying application instance
-[2025-05-20 23:13:53.994] [STRAY] [debug] Cleaning up resources
-[2025-05-20 23:13:53.994] [STRAY] [info] Cleaning up renderer
-[2025-05-20 23:13:53.994] [STRAY] [info] Destroying window
-[2025-05-20 23:13:54.005] [STRAY] [debug] Cleanup completed
-[2025-05-20 23:13:54.040] [STRAY] [info] Application terminated
+[2025-05-20 23:31:55.332] [STRAY] [info] Logger initialized
+[2025-05-20 23:31:55.332] [STRAY] [info] Log file: StrayGL.log
+[2025-05-20 23:31:55.333] [STRAY] [info] Initializing StrayGL Application Framework
+[2025-05-20 23:31:55.333] [STRAY] [debug] GLFW Version: 3.5.0
+[2025-05-20 23:31:55.401] [STRAY] [debug] GLFW initialized successfully
+[2025-05-20 23:31:55.401] [STRAY] [info] Starting application main loop
+[2025-05-20 23:31:55.401] [STRAY] [debug] Calling initialize()
+[2025-05-20 23:31:55.401] [STRAY] [info] Creating window: 'Basic Example' (800x600) with API: 1
+[2025-05-20 23:31:55.401] [STRAY] [debug] Applying 3 window hints
+[2025-05-20 23:31:55.814] [STRAY] [debug] Window created successfully
+[2025-05-20 23:31:55.815] [STRAY] [info] Creating renderer for API: 1
+[2025-05-20 23:31:55.835] [STRAY] [info] Renderer initialized successfully
+[2025-05-20 23:31:55.835] [STRAY] [debug] OpenGL context set to current
+[2025-05-20 23:31:55.835] [STRAY] [debug] Calling loadContent()
+[2025-05-20 23:31:55.835] [STRAY] [info] Entering main loop
+[2025-05-20 23:31:55.835] [STRAY] [debug] Starting main loop with window 0x5ef87db18220
+[2025-05-20 23:31:57.651] [STRAY] [debug] Exiting main loop
+[2025-05-20 23:31:57.651] [STRAY] [debug] Calling unloadContent()
+[2025-05-20 23:31:57.652] [STRAY] [debug] Calling terminate()
+[2025-05-20 23:31:57.652] [STRAY] [info] Application run cycle completed
+[2025-05-20 23:31:57.652] [STRAY] [debug] Destroying application instance
+[2025-05-20 23:31:57.652] [STRAY] [debug] Cleaning up resources
+[2025-05-20 23:31:57.652] [STRAY] [info] Cleaning up renderer
+[2025-05-20 23:31:57.652] [STRAY] [info] Destroying window
+[2025-05-20 23:31:57.670] [STRAY] [debug] Cleanup completed
+[2025-05-20 23:31:57.689] [STRAY] [info] Application terminated
