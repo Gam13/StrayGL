@@ -6,6 +6,7 @@
 ## 📌 **Visão Geral**
 Este projeto é uma biblioteca/ambiente de aprendizado para OpenGL moderno (core profile), criado com:
 - **GLFW** para gerenciamento de janelas e inputs
+- **spdlog** para debug e logging
 - **GLAD** para carregamento de funções OpenGL
 - **Dear ImGui** para interfaces de debug
 - **CMake** para construção multiplataforma
@@ -16,6 +17,7 @@ Este projeto é uma biblioteca/ambiente de aprendizado para OpenGL moderno (core
 - Gerenciamento de recursos gráficos
 - Técnicas básicas de iluminação e câmera
 - Boas práticas de organização de projetos gráficos
+- Após a finalização do OpenGl básico, implementar outros renderers
 
 ## ⚙️ **Dependências**
 | Biblioteca | Versão | Propósito |
