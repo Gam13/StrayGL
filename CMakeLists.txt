@@ -1,108 +1,162 @@
 cmake_minimum_required(VERSION 3.15)
 project(StrayGL LANGUAGES C CXX)
 
+set(STRAYGL_DEVELOPMENT ON)
+
 #==================================================
-# Configurações Básicas
+# Configuração de diretórios
+#==================================================
+set(VCPKG_DIR "${CMAKE_SOURCE_DIR}/build/vcpkg")
+set(VCPKG_INSTALL_DIR "${CMAKE_SOURCE_DIR}/build/vcpkg_installed")
+
+# Força vcpkg a instalar em build/
+set(ENV{VCPKG_ROOT} "${VCPKG_DIR}")
+set(ENV{VCPKG_INSTALLED_DIR} "${VCPKG_INSTALL_DIR}")
+
+# Define triplet padrão se não especificado
+if(NOT DEFINED VCPKG_TARGET_TRIPLET)
+    if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        set(VCPKG_TARGET_TRIPLET "x64-linux")
+    elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+        set(VCPKG_TARGET_TRIPLET "x64-osx")
+    elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+        set(VCPKG_TARGET_TRIPLET "x64-windows")
+    endif()
+endif()
+
+#==================================================
+# Baixa e configura o vcpkg se necessário
+#==================================================
+if(NOT EXISTS "${VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake")
+    message(STATUS "🔧 Baixando e configurando vcpkg...")
+
+    file(DOWNLOAD https://github.com/microsoft/vcpkg/archive/refs/heads/master.zip
+         ${CMAKE_BINARY_DIR}/vcpkg.zip
+         STATUS download_status
+         SHOW_PROGRESS)
+
+    list(GET download_status 0 status_code)
+    if(NOT status_code EQUAL 0)
+        message(FATAL_ERROR "❌ Falha ao baixar o vcpkg.")
+    endif()
+
+    execute_process(COMMAND ${CMAKE_COMMAND} -E tar xzf vcpkg.zip
+                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
+
+    file(GLOB extracted_dir "${CMAKE_SOURCE_DIR}/build/vcpkg-*")
+    file(RENAME "${extracted_dir}" "${VCPKG_DIR}")
+
+    execute_process(COMMAND ./bootstrap-vcpkg.sh
+                    WORKING_DIRECTORY "${VCPKG_DIR}"
+                    RESULT_VARIABLE bootstrap_result)
+
+    if(NOT bootstrap_result EQUAL 0)
+        message(FATAL_ERROR "❌ Falha ao compilar o vcpkg.")
+    endif()
+endif()
+
+#==================================================
+# Instala dependências (modo manifesto)
+#==================================================
+execute_process(COMMAND ./vcpkg install --x-install-root=${VCPKG_INSTALL_DIR}
+                WORKING_DIRECTORY ${VCPKG_DIR}
+                RESULT_VARIABLE install_result)
+
+if(NOT install_result EQUAL 0)
+    message(FATAL_ERROR "❌ Falha ao instalar dependências com vcpkg.")
+endif()
+
+#==================================================
+# Configura o Toolchain do vcpkg
+#==================================================
+set(CMAKE_TOOLCHAIN_FILE "${VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
+list(APPEND CMAKE_PREFIX_PATH "${VCPKG_INSTALL_DIR}/${VCPKG_TARGET_TRIPLET}")
+message(STATUS "✅ Usando vcpkg em: ${VCPKG_DIR} (triplet: ${VCPKG_TARGET_TRIPLET})")
+
+#==================================================
+# Configuração de compilador
 #==================================================
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Definir diretórios de include globais
-include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/3thparty/GLAD/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/3thparty/GLFW/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/3thparty/SPDLOG/include
-)
-
 #==================================================
 # Verificação do PCH
 #==================================================
-set(PCH_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/StrayGL/pch.h")
+set(PCH_HEADER "${CMAKE_SOURCE_DIR}/include/StrayGL/pch.h")
 if(NOT EXISTS ${PCH_HEADER})
-    message(FATAL_ERROR "Arquivo PCH não encontrado em: ${PCH_HEADER}")
+    message(FATAL_ERROR "❌ Arquivo PCH não encontrado: ${PCH_HEADER}")
 else()
-    message(STATUS "PCH encontrado em: ${PCH_HEADER}")
+    message(STATUS "📦 PCH encontrado em: ${PCH_HEADER}")
 endif()
 
 #==================================================
-# Dependências Obrigatórias
+# Dependências (serão encontradas via vcpkg)
 #==================================================
-add_subdirectory(3thparty/GLFW)
-add_subdirectory(3thparty/SPDLOG)
-set_target_properties(glfw PROPERTIES POSITION_INDEPENDENT_CODE ON)
+find_package(glfw3 CONFIG REQUIRED)
+find_package(glad CONFIG REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
+find_package(imgui CONFIG REQUIRED)
 
 #==================================================
-# Biblioteca Principal (APENAS UMA DEFINIÇÃO)
+# Fonte principal
 #==================================================
-set(C_SOURCES 3thparty/GLAD/src/glad.c)
 set(CXX_SOURCES 
     src/app.cpp
+    src/Logger.cpp
     src/Renderer/OpenGLRenderer.cpp
     src/Renderer/RendererFactory.cpp
-    src/Logger.cpp
 )
 
-# Definir a biblioteca principal UMA ÚNICA VEZ
-add_library(StrayGL ${C_SOURCES} ${CXX_SOURCES})
+add_library(StrayGL ${CXX_SOURCES})
 
-# Configurar PCH para arquivos C++
+target_include_directories(StrayGL PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+
+#==================================================
+# PCH
+#==================================================
 if(MSVC)
     target_precompile_headers(StrayGL PRIVATE ${PCH_HEADER})
 else()
-    # Configuração para GCC/Clang
     set_source_files_properties(${CXX_SOURCES} PROPERTIES
         COMPILE_FLAGS "-include ${PCH_HEADER}"
     )
 endif()
 
-target_link_libraries(StrayGL PRIVATE glfw spdlog)
+#==================================================
+# Link com bibliotecas vcpkg
+#==================================================
+target_link_libraries(StrayGL PRIVATE 
+    glfw
+    glad::glad
+    spdlog::spdlog
+    imgui::imgui
+)
 
 #==================================================
-# ImGui (Somente em desenvolvimento)
+# Instalação
+#==================================================
+install(TARGETS StrayGL EXPORT StrayGLTargets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include
+)
+
+install(EXPORT StrayGLTargets
+    FILE StrayGLConfig.cmake
+    NAMESPACE StrayGL::
+    DESTINATION lib/cmake/StrayGL
+)
+
+install(DIRECTORY include/StrayGL DESTINATION include)
+
+#==================================================
+# Exemplos (modo desenvolvimento)
 #==================================================
 if(STRAYGL_DEVELOPMENT)
-    message(STATUS "Configurando ImGui para desenvolvimento")
-    
-    set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3thparty/IMGUI)
-    
-    if(NOT EXISTS ${IMGUI_DIR}/imgui.h)
-        message(FATAL_ERROR "Submodule ImGui não encontrado. Execute:\n  git submodule update --init --recursive")
-    endif()
-    
-    # Configurar includes do ImGui explicitamente
-    include_directories(${IMGUI_DIR} ${IMGUI_DIR}/backends)
-    
-    add_library(imgui STATIC
-        ${IMGUI_DIR}/imgui.cpp
-        ${IMGUI_DIR}/imgui_draw.cpp
-        ${IMGUI_DIR}/imgui_tables.cpp
-        ${IMGUI_DIR}/imgui_widgets.cpp
-        ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
-        ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
-    )
-    
-    target_link_libraries(imgui PRIVATE glfw)
-    target_compile_definitions(imgui PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
-
     add_subdirectory(examples)
-endif()
-
-#==================================================
-# Instalação (Somente em produção)
-#==================================================
-if(NOT STRAYGL_DEVELOPMENT)
-    install(DIRECTORY include/StrayGL DESTINATION include)
-    install(TARGETS StrayGL EXPORT StrayGLTargets
-        ARCHIVE DESTINATION lib
-        LIBRARY DESTINATION lib
-        RUNTIME DESTINATION bin
-    )
-
-    install(EXPORT StrayGLTargets
-        FILE StrayGLConfig.cmake
-        NAMESPACE StrayGL::
-        DESTINATION lib/cmake/StrayGL
-    )
 endif()

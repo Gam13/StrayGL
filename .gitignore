@@ -1,5 +1,7 @@
 .vscode/
 /build/
+vcpkg/
+vcpkg_installed/
 /CMakeFiles/
 /CMakeCache.txt
 # Prerequisites
