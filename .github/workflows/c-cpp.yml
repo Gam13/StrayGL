@@ -1,10 +1,7 @@
 name: Build on Windows and Linux
 
-on:
-  push:
-    branches: [ "11-implementar-cicd-automático-com-auto-configuração-de-dependências" ]
-  pull_request:
-    branches: [ "11-implementar-cicd-automático-com-auto-configuração-de-dependências" ]
+on: [push, pull_request]
+
 
 jobs:
   build-linux:
