@@ -17,6 +17,11 @@ public:
         
     }
 
+    void draw() override{
+        renderDraw()->clean(0.3f,0.1f,0.3f,1.0f);
+
+    }
+
     void terminate() override
     {
 

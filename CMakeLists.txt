@@ -102,9 +102,10 @@ find_package(imgui CONFIG REQUIRED)
 # Fonte principal
 #==================================================
 set(CXX_SOURCES 
-    src/app.cpp
-    src/Logger.cpp
-    src/Renderer/OpenGLRenderer.cpp
+    src/Core/app.cpp
+    src/Core/Logger.cpp
+    src/Renderer/OpenGL/OpenGLRenderer.cpp
+    src/Renderer/OpenGL/OpenGLDrawing.cpp
     src/Renderer/RendererFactory.cpp
 )
 

@@ -11,5 +11,7 @@ namespace Stray
         virtual void cleanup() = 0;
         virtual void render() = 0;
         virtual void resize(int width, int height) = 0;
+
+        virtual void clean(float r, float g, float b, float a) = 0;
     };
 }

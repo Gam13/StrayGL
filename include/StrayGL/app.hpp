@@ -1,6 +1,5 @@
 #pragma once
-#ifndef STRAY_APP_HPP
-#define STRAY_APP_HPP
+
 #include "GLFW/glfw3.h"
 #include "StrayGL/Renderer/RendererFactory.hpp"
 #include "StrayGL/pch.h"
@@ -18,15 +17,20 @@ namespace Stray
         void run();
         void exit() { isRunning = false; }
 
+
+
+
     protected:
         // Métodos virtuais que podem ser sobrescritos
         virtual void initialize() {}            // Equivalente ao onInit original
         virtual void loadContent() {}           // Novo: para carregar assets
         virtual void update(float deltaTime) {} // Equivalente ao onUpdate
         virtual void unloadContent() {}         // Novo: para liberar recursos
+        virtual void draw(){}
         virtual void terminate() {}             // Equivalente ao onClose
 
         // Utilitários de acesso
+        IRenderer* renderDraw() const { return renderer.get(); }
         GLFWwindow *getWindow() const { return window; }
         float getAspectRatio() const { return width / static_cast<float>(height); }
 
@@ -53,5 +57,3 @@ namespace Stray
     }
 
 } // namespace Stray
-
-#endif // STRAY_APP_HPP

@@ -16,6 +16,9 @@ namespace Stray
         void render() override;
         void resize(int width, int height) override;
 
+        //Funções de Ferramenta
+        void clean(float r, float g, float b, float a) override;
+
     private:
         GLFWwindow * glWindow = nullptr;
         int glMajorVersion;

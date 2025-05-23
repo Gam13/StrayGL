@@ -166,6 +166,7 @@ namespace Stray
             glfwPollEvents();
             update(deltaTime);
 
+            draw();
             renderer->render();
 
             glfwSwapBuffers(window);

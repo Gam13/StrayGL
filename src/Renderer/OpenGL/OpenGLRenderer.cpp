@@ -31,7 +31,6 @@ namespace Stray
 
         // Configurações iniciais do OpenGL
         glViewport(0, 0, 800, 600);
-        glClearColor(0.3f, 0.1f, 0.3f, 1.0f);
 
         return true;
     }
