@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [ "11-implementar-cicd-automático-com-auto-configuração-de-dependências" ]
 
-
 jobs:
   build-linux:
     runs-on: ubuntu-latest
@@ -30,11 +29,10 @@ jobs:
         run: >
           cmake -B build
           -DCMAKE_BUILD_TYPE=Release
-          -DCMAKE_TOOLCHAIN_FILE=build/vcpkg/scripts/buildsystems/vcpkg.cmake
+          -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/build/vcpkg/scripts/buildsystems/vcpkg.cmake
 
       - name: 🏗️ Build
         run: cmake --build build --parallel
-
 
   build-windows:
     runs-on: windows-latest
@@ -52,7 +50,7 @@ jobs:
         run: >
           cmake -B build
           -DCMAKE_BUILD_TYPE=Release
-          -DCMAKE_TOOLCHAIN_FILE=build/vcpkg/scripts/buildsystems/vcpkg.cmake
+          -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/build/vcpkg/scripts/buildsystems/vcpkg.cmake
 
       - name: 🏗️ Build
         run: cmake --build build --parallel
