@@ -1,41 +1,35 @@
-# Verifica se estamos no modo desenvolvimento
+# Verifica modo desenvolvimento
 if(NOT STRAYGL_DEVELOPMENT)
-    message(STATUS "Exemplos desativados (modo produção)")
     return()
 endif()
 
-# Verifica dependências necessárias
-if(NOT TARGET imgui)
-    message(FATAL_ERROR "ImGui necessário para exemplos. Configure com -DSTRAYGL_DEVELOPMENT=ON")
+message(STATUS "Configurando exemplos...")
+
+# Verifica dependências
+if(NOT TARGET imgui::imgui)
+    message(FATAL_ERROR "ImGui necessário para exemplos")
 endif()
 
-# Verifica se o arquivo de exemplo existe
-if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/basic/basicExample.cpp)
-    message(FATAL_ERROR "Arquivo do exemplo não encontrado: ${CMAKE_CURRENT_SOURCE_DIR}/basic/basicExample.cpp")
-endif()
+# Cria executável do exemplo
+add_executable(StrayGL_BasicExample basic/basicExample.cpp)
 
-# Define o diretório de build dos exemplos
-set(EXAMPLES_BUILD_DIR ${CMAKE_BINARY_DIR}/examples)
-
-# Cria o executável do exemplo
-add_executable(StrayGL_BasicExample
-    basic/basicExample.cpp
+# Configura includes
+target_include_directories(StrayGL_BasicExample PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
 )
 
-# Linka com a biblioteca principal e o ImGui
+# Linka com a biblioteca principal e dependências
 target_link_libraries(StrayGL_BasicExample PRIVATE
-    StrayGL        
-    imgui
+    StrayGL  # Link direto com o alvo da biblioteca
+    imgui::imgui
 )
 
-# Define o diretório de saída dos binários
+# Configura diretório de saída
+set(EXAMPLES_OUTPUT_DIR ${CMAKE_BINARY_DIR}/examples)
 set_target_properties(StrayGL_BasicExample PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${EXAMPLES_BUILD_DIR}
-    RUNTIME_OUTPUT_DIRECTORY_DEBUG ${EXAMPLES_BUILD_DIR}
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE ${EXAMPLES_BUILD_DIR}
+    RUNTIME_OUTPUT_DIRECTORY ${EXAMPLES_OUTPUT_DIR}
 )
 
-# Configura para que os builds sejam colocados na pasta especificada
-if(NOT EXISTS ${EXAMPLES_BUILD_DIR})
-    file(MAKE_DIRECTORY ${EXAMPLES_BUILD_DIR})
+if(NOT EXISTS ${EXAMPLES_OUTPUT_DIR})
+    file(MAKE_DIRECTORY ${EXAMPLES_OUTPUT_DIR})
 endif()
