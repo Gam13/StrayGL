@@ -1,0 +1,13 @@
+{
+  "name": "straygl",
+  "version": "1.0.0",
+  "dependencies": [
+    "glfw3",
+    "glad",
+    "spdlog",
+    {
+      "name": "imgui",
+      "features": ["glfw-binding", "opengl3-binding"]
+    }
+  ]
+}
