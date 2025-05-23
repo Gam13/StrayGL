@@ -22,6 +22,7 @@ jobs:
           ./build/vcpkg/bootstrap-vcpkg.sh
           ./build/vcpkg/vcpkg install --x-install-root=build/vcpkg_installed
 
+          
       - name: 🧰 Configure CMake
         run: >
           cmake -B build
