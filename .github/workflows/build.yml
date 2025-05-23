@@ -1,0 +1,53 @@
+name: Build on Windows and Linux
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🛠️ Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y cmake g++ zip unzip tar curl
+
+      - name: 📦 Bootstrap and install vcpkg
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git build/vcpkg
+          ./build/vcpkg/bootstrap-vcpkg.sh
+          ./build/vcpkg/vcpkg install --x-install-root=build/vcpkg_installed
+
+      - name: 🧰 Configure CMake
+        run: >
+          cmake -B build
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_TOOLCHAIN_FILE=build/vcpkg/scripts/buildsystems/vcpkg.cmake
+
+      - name: 🏗️ Build
+        run: cmake --build build --parallel
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 📦 Bootstrap and install vcpkg
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git build/vcpkg
+          .\build\vcpkg\bootstrap-vcpkg.bat
+          .\build\vcpkg\vcpkg.exe install --x-install-root=build/vcpkg_installed
+
+      - name: 🧰 Configure CMake
+        run: >
+          cmake -B build
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_TOOLCHAIN_FILE=build/vcpkg/scripts/buildsystems/vcpkg.cmake
+
+      - name: 🏗️ Build
+        run: cmake --build build --parallel
