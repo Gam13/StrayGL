@@ -23,8 +23,8 @@ namespace Stray
         virtual void initialize() {}            // Equivalente ao onInit original
         virtual void loadContent() {}           // Novo: para carregar assets
         virtual void update(float deltaTime) {} // Equivalente ao onUpdate
-        virtual void unloadContent() {}         // Novo: para liberar recursos
         virtual void draw(){}
+        virtual void unloadContent() {}         // Novo: para liberar recursos
         virtual void terminate() {}             // Equivalente ao onClose
 
         // Utilitários de acesso

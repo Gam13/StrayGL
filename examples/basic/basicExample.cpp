@@ -12,6 +12,11 @@ public:
         createWindow("Basic Example", 800, 600,Stray::StrayAPI::OpenGL);
     }
 
+    void loadContent() override
+    {
+
+    }
+
     void update(float deltaTime) override
     {
         
@@ -19,6 +24,11 @@ public:
 
     void draw() override{
         renderDraw()->clean(0.3f,0.1f,0.3f,1.0f);
+
+    }
+
+    void unloadContent() override
+    {
 
     }
 
