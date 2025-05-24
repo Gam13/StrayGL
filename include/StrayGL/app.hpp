@@ -18,8 +18,6 @@ namespace Stray
         void exit() { isRunning = false; }
 
 
-
-
     protected:
         // Métodos virtuais que podem ser sobrescritos
         virtual void initialize() {}            // Equivalente ao onInit original
